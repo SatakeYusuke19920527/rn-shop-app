@@ -2,14 +2,13 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  View,
   Image,
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import { Shop } from '../types/Shop';
 
-import Stars from './Stars';
+import { Stars } from './Stars';
 
 const { width } = Dimensions.get('window');
 const CONTAINER_WIDTH = width / 2;

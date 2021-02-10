@@ -8,7 +8,11 @@ type Props = {
   textSize?: number;
 };
 
-const Stars: React.FC<Props> = ({ score, starSize = 16, textSize = 14 }) => {
+export const Stars: React.FC<Props> = ({
+  score,
+  starSize = 16,
+  textSize = 14,
+}) => {
   return (
     <View style={styles.container}>
       <FontAwesome
@@ -35,8 +39,6 @@ const Stars: React.FC<Props> = ({ score, starSize = 16, textSize = 14 }) => {
     </View>
   );
 };
-
-export default Stars;
 
 const styles = StyleSheet.create({
   container: {
