@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, GestureResponderEvent } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/Navigation';
@@ -23,7 +23,9 @@ const ShopScreen: React.FC<Props> = ({ navigation, route }: Props) => {
       <ShopDetail shop={shop} />
       <FloatingActionButton
         iconName="plus"
-        onPress={() => navigation.navigate('CreateReview', { shop })}
+        onPress={(event: GestureResponderEvent) =>
+          navigation.navigate('CreateReview', { shop })
+        }
       />
     </View>
   );

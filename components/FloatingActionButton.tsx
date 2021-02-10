@@ -9,7 +9,7 @@ import { Feather } from '@expo/vector-icons';
 const SIZE = 56;
 
 type Props = {
-  iconName: string;
+  iconName?: string;
   onPress: (event: GestureResponderEvent) => void;
 };
 

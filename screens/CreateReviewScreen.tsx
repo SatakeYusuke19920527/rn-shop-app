@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/Navigation';
 import { RouteProp } from '@react-navigation/native';
+import { IconButton } from '../components/IconButton';
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'Shop'>;
@@ -12,6 +13,20 @@ type Props = {
 
 const CreateReviewScreen = ({ navigation, route }: Props) => {
   const { shop } = route.params;
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: shop.name,
+      headerLeft: () => (
+        <IconButton
+          name="x"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+      ),
+    });
+  }, []);
   const handleClick = () => {
     navigation.navigate('Main');
   };
