@@ -9,7 +9,27 @@ import { Feather } from '@expo/vector-icons';
 const SIZE = 56;
 
 type Props = {
-  iconName?: string;
+  iconName:
+    | 'link'
+    | 'search'
+    | 'image'
+    | 'menu'
+    | 'radio'
+    | 'key'
+    | 'code'
+    | 'map'
+    | 'video'
+    | 'circle'
+    | 'filter'
+    | 'minus'
+    | 'plus'
+    | 'info'
+    | 'check'
+    | 'book'
+    | 'pause'
+    | 'frown'
+    | 'mail'
+    | undefined;
   onPress: (event: GestureResponderEvent) => void;
 };
 

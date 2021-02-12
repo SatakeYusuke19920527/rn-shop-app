@@ -9,7 +9,28 @@ import { Feather } from '@expo/vector-icons';
 
 type Props = {
   onPress: (event: GestureResponderEvent) => void;
-  name: string;
+  name:
+    | 'link'
+    | 'search'
+    | 'image'
+    | 'menu'
+    | 'radio'
+    | 'key'
+    | 'code'
+    | 'map'
+    | 'video'
+    | 'circle'
+    | 'filter'
+    | 'minus'
+    | 'plus'
+    | 'info'
+    | 'check'
+    | 'book'
+    | 'pause'
+    | 'frown'
+    | 'mail'
+    | 'x'
+    | undefined;
   color?: string;
 };
 

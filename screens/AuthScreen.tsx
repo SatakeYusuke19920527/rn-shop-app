@@ -6,7 +6,16 @@ import {
   Text,
 } from 'react-native';
 
+import { signin } from '../config/firebase';
+
 export const AuthScreen: React.FC = () => {
+  useEffect(() => {
+    const fetchUser = async () => {
+      await signin();
+    };
+    fetchUser();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <ActivityIndicator size="large" />

@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import MainTabNavigator from '../navigation/MainTabNavigator';
 import { AuthScreen } from '../screens/AuthScreen';
 export const AppNavigator = () => {
-  const user = { id: 123 };
+  const user = null;
   return (
     <NavigationContainer>
       {!user ? <AuthScreen /> : <MainTabNavigator />}

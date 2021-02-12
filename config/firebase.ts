@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 import Constants from 'expo-constants';
@@ -9,6 +10,7 @@ if (!firebase.apps.length) {
 }
 
 export const db = firebase.firestore()
+export const auth = firebase.auth()
 
 export const getShops = async () => {
   const snapshot = await db.collection('shops')
@@ -19,3 +21,10 @@ export const getShops = async () => {
     );
   return shops
 };
+
+export const signin = async () => {
+  const userCredencial = await auth.signInAnonymously()
+  const user = userCredencial.user
+  console.log(user)
+  const userDoc = await firebase.firestore().collection('users').doc(user?.uid).get()
+}
