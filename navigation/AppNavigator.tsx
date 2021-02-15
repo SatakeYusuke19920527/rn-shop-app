@@ -6,7 +6,6 @@ import { UserContext } from '../contexts/userContexts';
 
 export const AppNavigator = () => {
   const { user } = useContext(UserContext);
-  console.log(user?.id);
   return (
     <NavigationContainer>
       {!user ? <AuthScreen /> : <MainTabNavigator />}

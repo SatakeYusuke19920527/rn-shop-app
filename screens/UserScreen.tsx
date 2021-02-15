@@ -5,7 +5,10 @@ import firebase from 'firebase';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/navigation';
 import { RouteProp } from '@react-navigation/native';
-
+import { Form } from '../components/Form';
+import { Button } from '../components/Button';
+import { UserContext } from '../contexts/userContexts';
+import { updateUser } from '../config/firebase';
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'User'>;
   route: RouteProp<RootStackParamList, 'User'>;
@@ -13,12 +16,23 @@ type Props = {
 
 export const UserScreen: React.FC<Props> = ({ navigation, route }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
-
-  const onSubmit = async () => {};
+  const { user } = useContext(UserContext);
+  const [name, setName] = useState<string>('');
+  const onSubmit = async () => {
+    await updateUser(user?.id!, { name });
+    setName('');
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>User</Text>
+      <Form
+        value={name}
+        label="name"
+        onChangeText={(text) => {
+          setName(text);
+        }}
+      />
+      <Button text="保存する" onPress={onSubmit} />
     </SafeAreaView>
   );
 };
@@ -26,8 +40,5 @@ export const UserScreen: React.FC<Props> = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
   },
 });

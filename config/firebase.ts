@@ -24,19 +24,29 @@ export const getShops = async () => {
 };
 
 export const signin = async () => {
-  const userCredencial = await auth.signInAnonymously()
-  const user = userCredencial.user
-  const userDoc = await firebase.firestore().collection('users').doc(user?.uid).get()
-  if (!userDoc) {
-    await firebase.firestore().collection('users').doc(user?.uid).set(initialUser)
+  const userCredintial = await firebase.auth().signInAnonymously();
+  const { uid } = userCredintial.user!;
+  const userDoc = await firebase.firestore().collection("users").doc(uid).get();
+  if (!userDoc.exists) {
+    await firebase.firestore().collection("users").doc(uid).set(initialUser);
     return {
       ...initialUser,
-      id: user?.uid,
-    } as User
+      id: uid,
+    } as User;
   } else {
     return {
-      id: user?.uid,
-      ...userDoc.data()
-    } as User
+      id: uid,
+      ...userDoc.data(),
+    } as User;
   }
+};
+
+export const updateUser = async (userId: string, params: any) => {
+  console.log(userId)
+  await db.collection('users')
+    .doc(userId)
+    .update(params)
+    .then(() => {
+      console.log('finish')
+    })
 }
