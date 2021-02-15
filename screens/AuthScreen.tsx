@@ -7,11 +7,15 @@ import {
 } from 'react-native';
 
 import { signin } from '../config/firebase';
+import { UserContext } from '../contexts/userContexts';
+import { User } from '../types/User';
 
 export const AuthScreen: React.FC = () => {
+  const { setUser } = useContext(UserContext);
   useEffect(() => {
     const fetchUser = async () => {
-      await signin();
+      const user = await signin();
+      setUser(user as User);
     };
     fetchUser();
   }, []);
