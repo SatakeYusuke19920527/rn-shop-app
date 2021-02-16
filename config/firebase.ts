@@ -13,6 +13,7 @@ if (!firebase.apps.length) {
 
 export const db = firebase.firestore()
 export const auth = firebase.auth()
+export const storage = firebase.storage()
 
 export const getShops = async () => {
   const snapshot = await db.collection('shops')
@@ -48,6 +49,22 @@ export const updateUser = async (userId: string, params: any) => {
     .update(params)
 }
 
-export const addReview = async (shopId: string, review: Review) => {
-  await db.collection('shops').doc(shopId).collection('reviews').add(review)
+export const createReviewRef = async (shopId: string) => {
+  return await db.collection('shops').doc(shopId).collection('reviews').doc()
+}
+
+export const uploadImage = async (uri: string, path: string) => {
+  // urlをblobへ変換
+  const localUri = await fetch(uri)
+  const blob = await localUri.blob()
+  //storageへupload
+  const ref = storage.ref().child(path)
+  let downloadUrl = ""
+  try {
+    await ref.put(blob)
+    downloadUrl = await ref.getDownloadURL()
+  } catch (err) {
+    console.log(err)
+  } 
+  return downloadUrl
 }

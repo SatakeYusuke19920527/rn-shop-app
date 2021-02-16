@@ -5,12 +5,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/Navigation';
 import { RouteProp } from '@react-navigation/native';
 import { IconButton } from '../components/IconButton';
-
+import { getExtention } from '../utils/file';
 import { TextArea } from '../components/TextArea';
 import { StarInput } from '../components/StarInput';
-
+import { Loading } from '../components/Loading';
 import { Button } from '../components/Button';
-import { addReview } from '../config/firebase';
+import { createReviewRef, uploadImage } from '../config/firebase';
 
 import { UserContext } from '../contexts/userContexts';
 import { Review } from '../types/review';
@@ -28,6 +28,7 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
   const [text, setText] = useState<string>('');
   const [score, setScore] = useState<number>(3);
   const [imageUri, setImageUri] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const { user } = useContext(UserContext);
   useEffect(() => {
     navigation.setOptions({
@@ -44,6 +45,15 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
     });
   }, [shop]);
   const onSubmit = async () => {
+    setLoading(true);
+    // documentのIDを取得
+    const reviewDocRef = await createReviewRef(shop?.id);
+    // storageのpathを決定
+    const ext = getExtention(imageUri);
+    const storagePath = `reviews/${reviewDocRef.id}.${ext}`;
+    // 画像をstorageにアップロード
+    const downloadUrl = await uploadImage(imageUri, storagePath);
+    // reviewドキュメントを作成する
     const review = {
       user: {
         name: user?.name,
@@ -55,14 +65,17 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
       },
       text,
       score,
+      imageUrl: downloadUrl,
       updatedAt: firebase.firestore.Timestamp.now(),
       createdAt: firebase.firestore.Timestamp.now(),
     } as Review;
-    await addReview(shop.id, review);
+    // await addReview(shop.id, review);
+    await reviewDocRef.set(review);
+    setLoading(false);
+    navigation.goBack();
   };
 
   const onPickImage = async () => {
-    console.log('this is invoked');
     const uri = await pickImage();
     setImageUri(uri!);
   };
@@ -83,6 +96,7 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
         )}
       </View>
       <Button onPress={onSubmit} text="レビューを投稿する" />
+      <Loading visible={loading} />
     </View>
   );
 };
