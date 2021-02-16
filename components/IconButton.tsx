@@ -30,6 +30,7 @@ type Props = {
     | 'frown'
     | 'mail'
     | 'x'
+    | 'camera'
     | undefined;
   color?: string;
 };

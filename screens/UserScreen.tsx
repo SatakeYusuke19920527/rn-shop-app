@@ -9,6 +9,9 @@ import { Form } from '../components/Form';
 import { Button } from '../components/Button';
 import { UserContext } from '../contexts/userContexts';
 import { updateUser } from '../config/firebase';
+
+import { Loading } from '../components/Loading';
+
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'User'>;
   route: RouteProp<RootStackParamList, 'User'>;
@@ -16,11 +19,15 @@ type Props = {
 
 export const UserScreen: React.FC<Props> = ({ navigation, route }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [name, setName] = useState<string>('');
   const onSubmit = async () => {
-    await updateUser(user?.id!, { name });
+    setLoading(true);
+    const updatedAt = firebase.firestore.Timestamp.now();
+    await updateUser(user?.id!, { name, updatedAt });
+    setUser({ ...user, name, updatedAt });
     setName('');
+    setLoading(false);
   };
 
   return (
@@ -33,6 +40,7 @@ export const UserScreen: React.FC<Props> = ({ navigation, route }: Props) => {
         }}
       />
       <Button text="保存する" onPress={onSubmit} />
+      <Loading visible={loading} />
     </SafeAreaView>
   );
 };
