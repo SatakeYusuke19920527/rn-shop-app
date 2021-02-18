@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, Image, View, Alert } from 'react-native';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/Navigation';
@@ -11,10 +11,9 @@ import { StarInput } from '../components/StarInput';
 import { Loading } from '../components/Loading';
 import { Button } from '../components/Button';
 import { createReviewRef, uploadImage } from '../config/firebase';
-
 import { UserContext } from '../contexts/userContexts';
 import { Review } from '../types/review';
-
+import { ReviewsContext } from '../contexts/reviewsContext';
 import firebase from 'firebase';
 import { pickImage } from '../config/image-picker';
 
@@ -30,6 +29,7 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
   const [imageUri, setImageUri] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const { user } = useContext(UserContext);
+  const { reviews, setReviews } = useContext(ReviewsContext);
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -45,6 +45,10 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
     });
   }, [shop]);
   const onSubmit = async () => {
+    if (!text || !imageUri) {
+      Alert.alert('レビューまたは画像がありません');
+      return;
+    }
     setLoading(true);
     // documentのIDを取得
     const reviewDocRef = await createReviewRef(shop?.id);
@@ -55,6 +59,7 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
     const downloadUrl = await uploadImage(imageUri, storagePath);
     // reviewドキュメントを作成する
     const review = {
+      id: reviewDocRef.id,
       user: {
         name: user?.name,
         id: user?.id,
@@ -69,8 +74,8 @@ const CreateReviewScreen = ({ navigation, route }: Props) => {
       updatedAt: firebase.firestore.Timestamp.now(),
       createdAt: firebase.firestore.Timestamp.now(),
     } as Review;
-    // await addReview(shop.id, review);
     await reviewDocRef.set(review);
+    setReviews([review, ...reviews!]);
     setLoading(false);
     navigation.goBack();
   };
